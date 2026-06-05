@@ -1,0 +1,44 @@
+class Solution:
+    def totalWaviness(self, num1: int, num2: int) -> int:
+        def solve(n: int) -> int:
+            if n < 0:
+                return 0
+
+            s = str(n)
+
+            @lru_cache(None)
+            def dfs(pos, tight, started, cnt, a, b):
+                if pos == len(s):
+                    return (1, 0)  # ways, total waviness
+
+                limit = int(s[pos]) if tight else 9
+                total_ways = 0
+                total_wave = 0
+
+                for d in range(limit + 1):
+                    ntight = tight and (d == limit)
+
+                    if not started and d == 0:
+                        ways, wave = dfs(pos + 1, ntight, False, 0, -1, -1)
+                        total_ways += ways
+                        total_wave += wave
+                    else:
+                        if not started:
+                            ways, wave = dfs(pos + 1, ntight, True, 1, -1, d)
+                            total_ways += ways
+                            total_wave += wave
+                        elif cnt == 1:
+                            ways, wave = dfs(pos + 1, ntight, True, 2, b, d)
+                            total_ways += ways
+                            total_wave += wave
+                        else:
+                            add = 1 if ((b > a and b > d) or (b < a and b < d)) else 0
+                            ways, wave = dfs(pos + 1, ntight, True, 2, b, d)
+                            total_ways += ways
+                            total_wave += wave + add * ways
+
+                return total_ways, total_wave
+
+            return dfs(0, True, False, 0, -1, -1)[1]
+
+        return solve(num2) - solve(num1 - 1)  
