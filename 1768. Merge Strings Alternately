@@ -1,0 +1,21 @@
+class Solution:
+    def mergeAlternately(self, word1: str, word2: str) -> str:
+        extra=""
+        new=[]
+        w1 = len(word1)
+        w2 = len(word2)
+        if w1 > w2:
+            extra = word1[w2:]
+            word1 = word1[:w2]
+        elif w1 < w2:
+            extra = word2[w1:]
+            word2 = word2[:w1]
+        
+        for x in range(0,len(word1)):
+            new.append(word1[x])
+            new.append(word2[x])
+        
+        if extra:
+            new.append(extra)
+        
+        return "".join(new)
